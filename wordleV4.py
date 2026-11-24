@@ -3,7 +3,7 @@ Created on Mon Sep 28 13:11:00 2026
 
 @author: melon
 """
-"""2 by Milan Murphy mjmurph1@ualberta.ca"""
+"""WordleV4 by Milan Murphy mjmurph1@ualberta.ca"""
 "Intended for the ENCMP 100 fall 2026 competition"
 
 import numpy as np
@@ -219,12 +219,16 @@ def findBestGuess(guesses, guessesEval, turn, guessList, greens, yellows, starti
                 greens.append(letter)
                 
                 x = np.where(np.array([word[i] != letter for word in guessList]))
+                #the for loop logic in the above line was made with
+                #ai assistance
                 guessList = filterX(x, guessList).copy()
              
             #Yellow square loop part one
             if guessesEval[turn-2][i] == 1:
                 yellows.append(letter)
                 x = np.where(np.array([word[i] == letter for word in guessList]))
+                #the for loop logic in the above line was made with
+                #ai assistance
                 guessList = filterX(x, guessList).copy()
                 
         for i in range(0,5):
@@ -233,12 +237,16 @@ def findBestGuess(guesses, guessesEval, turn, guessList, greens, yellows, starti
             #second yellow suqare loop
             for j in yellows:
                 x = np.where(np.array([j not in word for word in guessList]))
+                #the for loop logic in the above line was made with
+                #ai assistance
                 guessList = filterX(x, guessList).copy()         
             
             #deal with the grays
             if guessesEval[turn-2][i] == 0:
                 x = np.where(np.array([letter in word and letter not in greens 
                             and letter not in yellows for word in guessList]))
+                #the for loop logic in the above line was made with
+                #ai assistance
                 #im sure theres a better way to do this ^^^^
                 guessList = filterX(x, guessList).copy()
                 

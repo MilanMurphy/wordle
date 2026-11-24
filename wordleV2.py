@@ -3,7 +3,7 @@ Created on Mon Sep 28 13:11:00 2026
 
 @author: melon
 """
-"""2 by Milan Murphy mjmurph1@ualberta.ca"""
+"""WordleV2 by Milan Murphy mjmurph1@ualberta.ca"""
 "Intended for the ENCMP 100 fall 2026 competition"
 
 import numpy as np

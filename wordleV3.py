@@ -3,7 +3,7 @@ Created on Mon Sep 28 13:11:00 2026
 
 @author: melon
 """
-"""2 by Milan Murphy mjmurph1@ualberta.ca"""
+"""wordleV3 by Milan Murphy mjmurph1@ualberta.ca"""
 "Intended for the ENCMP 100 fall 2026 competition"
 
 import numpy as np
@@ -190,29 +190,32 @@ def solve():
     pass
     
 def findBestGuess(guesses, guessesEval, turn, guessList):
-    input()
     if turn != 1:
         greens = []
         yellows = []
         for i in range(0,5):
+            #keep greens
             if guessesEval[turn-2][i] == 2:
                 greens.append(guesses[turn-2][i])
                 for j in guessList[:]:
                     if j[i] != guesses[turn-2][i]:
                         guessList.remove(j)
              
+            #get rid of yellows where yellows are
             if guessesEval[turn-2][i] == 1:
                 yellows.append(guesses[turn-2][i])
                 for j in guessList[:]:
                     if j[i] == guesses[turn-2][i]:
                         guessList.remove(j)   
-        
+                        
         for i in range(0,5): 
+            #ensure yellows are in guessed words
             if guessesEval[turn-2][i] == 1:
                 for j in guessList[:]:
                     if not guesses[turn-2][i] in j:
                         guessList.remove(j)
                 
+            #get rid of all words with grey letters
             if guessesEval[turn-2][i] == 0:
                 for j in guessList[:]:
                     if guesses[turn-2][i] in j and not guesses[turn-2][i] in greens and not guesses[turn-2][i] in yellows:
