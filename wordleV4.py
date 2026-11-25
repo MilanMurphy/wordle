@@ -21,9 +21,14 @@ for i in wordPriority:
 
 
 def main():
+    """Manages starting and exiting the program.
+    Allows user to navigate the program through an input.\n
+    Inputs: None \n
+    Returns: None
+    """
     
-    #Manages starting and exiting the program
-    start = input("Type EXIT to close the program, GAME to play the game, or SOLVE to use the solver.")
+    start = input(""""Type EXIT to close the program, HELP for help, 
+GAME to play the game, or SOLVE to use the solver.""")
     
     if start.lower() == "exit":
         pass
@@ -31,15 +36,33 @@ def main():
         game()
     elif start.lower() == "solve":
         solve()
+    elif start.lower() == "help":
+        print("""
+Wordle is a word guessing game, where you input five letter words
+and recieve hints based on how correct each letter is. A grey letter 
+means that that letter is not in the final word. A yellow letter is 
+included in the final word, but in a different collumn. A green letter 
+is a correct letter in the correct column. Use these hints to form your 
+guesses.
+\n
+In the solver, you may input any legal finishing word and the program 
+will try to guess it in as little guesses as possible.
+\n""")
+        main()
     else: main()
 
 
 def game(): 
+    """Manages the game flow of Wordle.
+    This includes generating words, plotting,
+    and winning / losing. \n
+    Inputs: None \n
+    Returns: None
+    """
+    
     word = random.choice(validAnswerList)
-    plotGame([], [])
-    #Takes the game answer as input Word
-    #manages the flow of the game (ex guesses, evaluating wins)
-    answer = wordToList(word)
+    plotGame([], [], 0)
+    answer = wordToArray(word)
     guessesEval = []
     guesses = []
     turn = 0
@@ -50,7 +73,7 @@ def game():
         turn += 1
         guesses.append(askGuess())
         guessesEval.append(evaluateGuess(guesses[i], answer))
-        plotGame(guessesEval, guesses)
+        plotGame(guessesEval, guesses, turn)
         if np.array_equal(guesses[i], answer):
             win = True
             break
@@ -64,34 +87,42 @@ def game():
     pass
 
 def askGuess():
-    #Gets and validates the guess the user inputs
-    #Returns the guess when it is valid
-    #Invokes itself if a guess is invalid
+    """Gets and validates the user guess inputs.
+    Can invoke itself
+    Inputs: None \n
+    Returns: guess - 1d array of strings [x,y,z,i,j]"""
+    
     guess = input("Guess: ")
     if type(guess) == str and len(guess) == 5 and np.any(validWordList == guess.lower()):
-        return wordToList(guess.lower())
+        return wordToArray(guess.lower())
     else: 
         print("Invalid Guess!")
         return(askGuess())
     
 def askWord():
+    """Gets and validates the user solver inputs.
+    Can invoke itself.
+    Inputs: None \n
+    Returns: wordToSolve - 1d array of strings [x,y,z,i,j]"""
     #Gets and validates the word the user inputs
     #Returns the word when it is valid
     #Invokes itself if a guess is invalid
-    guess = input("Word: ")
-    if type(guess) == str and len(guess) == 5 and np.any(validAnswerList == guess.lower()):
-        return wordToList(guess.lower())
+    wordToSolve = input("Word: ")
+    if type(wordToSolve) == str and len(wordToSolve) == 5 and np.any(validAnswerList == wordToSolve.lower()):
+        return wordToArray(wordToSolve.lower())
     else: 
         print("Invalid Word!")
         return(askWord())
 
 def evaluateGuess(guess, answer):
-    #Evaluates a guess, taking the users guess, and the game answer as its 
-    #parameters
-    #Returns an array in the form of [x,y,z,j,k], where each letter is a
-    #number between 0-2, with 0 being not in the word, 1 being in the word
-    #in the wrong place, and 2 being the correct letter in the
-    #correct place
+    """Evaluates a guess for the 
+    return hints. \n
+    Inputs: guess - users guess \n
+    answer - the game answer \n
+    Returns: correct - an array of the hints
+    
+    
+    """
     
     guessTemp = np.copy(guess)
     answerTemp = np.copy(answer)
@@ -128,25 +159,26 @@ def evaluateGuess(guess, answer):
     
         return(correct)
     
-def wordToList(word):
-    #Convers a string to a one dimentional list where each
-    #Item is each letter of the string
-    #Returns a list
+def wordToArray(word):
+    """Converts a string to a one dimentional array \n
+    Inputs: word - string \n
+    Returns: arr - array \n
+    """
     j = 0
     arr = np.full(5, '')
     for i in word:
         arr[j] = i
         j += 1
     return(arr)
-    #this could be replaced by list(str) (for the most part) but i completly 
-    #forgot about that when starting this program
 
-def plotGame(guessesEval, guesses):
-    #Takes guessesEval and guesse as input
-    #guessesEval is a 2d array with every current and past guess, as well
-    #as their correctness, where guesses has every current and pass guess
-    #as a wordToList() array
-    #plots the game to the plots window
+def plotGame(guessesEval, guesses, turns):
+    """Creates a plot of the current game state \n
+    Inputs: guessesEval - array of hints for every guess \n
+    guesses - array of every guess \n
+    turns - turn number \n
+    Returns: None
+    
+    """
         
     for i in range(0,6):
         for j in range(0,5):
@@ -159,7 +191,8 @@ def plotGame(guessesEval, guesses):
                 else: plt.plot(j, 6-i, color="gray",marker="s", markersize=25)
                 plt.text(j-0.15,6-i-0.25,str(guesses[i][j]).upper(), color="white", fontsize=22)
             else:   plt.plot(j, 6-i, color="black",marker="s", markersize=25)
-
+    turns = 6-turns
+    plt.title(f"Turns left: {turns}")
     plt.xlim(-1, 5)
     plt.ylim(0, 7)
     plt.axis("off")
@@ -167,14 +200,19 @@ def plotGame(guessesEval, guesses):
     pass
 
 def solve():
-    #set starting variables for the game/computer
+    """Controls the game flow for the computer solver \n
+    Inputs: None \n
+    Returns: None
+    """
+    
+ 
     greens = []
     yellows = []
     guessList = validAnswerList.copy()
     startingWord = "slant"
     word = askWord()
-    plotGame([], [])
-    answer = wordToList(word)
+    plotGame([], [], 0)
+    answer = wordToArray(word)
     guessesEval = []
     guesses = []
     turn = 0
@@ -185,12 +223,12 @@ def solve():
         turn += 1
         solver = findBestGuess(guesses, guessesEval, turn, guessList, greens, yellows, startingWord)
         guessList = solver[1].copy()
-        guesses.append(wordToList(solver[0]))
+        guesses.append(wordToArray(solver[0]))
         guessesEval.append(evaluateGuess(guesses[i], answer))
         greens = solver[2]
         yellows = solver[3]
         
-        plotGame(guessesEval, guesses)
+        plotGame(guessesEval, guesses, turn)
         if np.array_equal(guesses[i], answer):
             win = True
             break
@@ -207,6 +245,19 @@ def solve():
     pass
     
 def findBestGuess(guesses, guessesEval, turn, guessList, greens, yellows, startingWord):
+    """Finds the best guess for the next word based on the current game state,
+    and the list of word priorities. \n
+    Inputs: guesses - all  guesses \n
+    guessesEval - all  hints \n
+    turn - turn number \n
+    guessList - array of all possible gueses left\n
+    greens - list of green letters \n
+    yellows - list of all yellow letters \n
+    startingWord - the starting word for the program\n
+    Returns: guess - the best guess \n
+    guessList - list of possible guesses \n
+    greens - all green letters \n
+    yellows - all yellow letters \n"""
    
     if turn != 1:
     
@@ -266,16 +317,25 @@ def findBestGuess(guesses, guessesEval, turn, guessList, greens, yellows, starti
     return(guess, guessList, greens, yellows)
     pass
 
-    #Filters the list based on a filter variable, and replaces the list
-    #Helps with effeciency when running a large number of games
+    
 def filterX(x, guessList):
+    """Filters the array based on a filter variable, and replaces the list
+    with the filtered array \n
+    Inputs: x - the filter array \n
+    guessList - the list to filter \n
+    Returns: newGuessList - the filtered list
+    """
     filter = np.full(len(guessList), True)
     filter[x] = False
     newGuessList = guessList[filter]
     return(newGuessList)
 
-    #picks words based on what has the highest priority
+
 def evaluatePriority(guessList):
+    """Picks what word has the highest priority based on the 
+    remaining guess list \n
+    Inputs: guessList - remaining possible words \n
+    Returns: word - picked word"""
     priority = 9
     word = ""
     for i in guessList:
@@ -286,5 +346,5 @@ def evaluatePriority(guessList):
     return(word)
             
 
-
-main()
+if __name__ == '__main__':
+    main()
