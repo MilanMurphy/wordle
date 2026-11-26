@@ -281,6 +281,8 @@ def findBestGuess(guesses, guessesEval, turn, guessList, greens, yellows, starti
                 #the for loop logic in the above line was made with
                 #ai assistance
                 guessList = filterX(x, guessList).copy()
+            
+           
                 
         for i in range(0,5):
             letter = guesses[turn-2][i]
@@ -300,6 +302,14 @@ def findBestGuess(guesses, guessesEval, turn, guessList, greens, yellows, starti
                 #ai assistance
                 #im sure theres a better way to do this ^^^^
                 guessList = filterX(x, guessList).copy()
+                
+            #gray square loop part one
+            if guessesEval[turn-2][i] == 0:
+                x = np.where(np.array([word[i] == letter for word in guessList]))
+                #the for loop logic in the above line was made with
+                #ai assistance
+                guessList = filterX(x, guessList).copy()
+                
                 
                 
             
