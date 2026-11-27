@@ -4,7 +4,7 @@ IMPORTANT
 To run the program properly, wordleV4.py must be ran
 in a folder containing wordlist.csv, wordPriority.csv, and wordBank.csv in their unmodified
 formats. The program will not work otherwise, and they should be included in the
-download. The program is meant to be ranin spyder v6.
+download. The program is meant to be ran in spyder v6.
 
 This folder contains all the resources that were used in the creation of my project.
 The completed project is wordleV4.py. wordleV4.py allows you to play wordle, as well as
